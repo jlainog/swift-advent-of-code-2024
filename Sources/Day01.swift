@@ -1,16 +1,14 @@
 import Algorithms
 import Parsing
 
-typealias LocationId = Int
-
 struct Day01: AdventDay {
+
+  typealias LocationId = Int
+  
   // Save your data in a corresponding text file in the `Data` directory.
   var data: String
 
   func parseInput() throws -> ([LocationId], [LocationId]) {
-    var list1 = [LocationId]()
-    var list2 = [LocationId]()
-
     let row = Parse(input: Substring.self) {
       Int.parser()
       "   "
@@ -22,16 +20,19 @@ struct Day01: AdventDay {
       "\n"
     } terminator: {
       Whitespace()
-    }
-      .map { rows in
+    }.map { rows in
+      var list1 = [LocationId]()
+      var list2 = [LocationId]()
+
       for row in rows {
         list1.append(row.0)
         list2.append(row.1)
       }
+
+      return (list1, list2)
     }
 
-    try rows.parse(data)
-    return (list1, list2)
+    return try rows.parse(data)
   }
 
   func part1() async throws -> Int {
