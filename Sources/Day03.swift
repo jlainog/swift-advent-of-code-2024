@@ -7,17 +7,16 @@ struct Day03: AdventDay {
   var data: String
 
   func parseInput() throws -> [Int] {
-    return []()
+    return [Int]()
   }
 
   func part1() async throws -> Int {
     let input = try parseInput()
-    return PartUnimplemented(day: day, part: 1)
+    throw PartUnimplemented(day: day, part: 1)
   }
 
   func part2() async throws -> Int {
     let input = try parseInput()
     throw PartUnimplemented(day: day, part: 2)
   }
-  
 }

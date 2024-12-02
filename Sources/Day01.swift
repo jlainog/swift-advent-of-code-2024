@@ -4,7 +4,7 @@ import Parsing
 struct Day01: AdventDay {
 
   typealias LocationId = Int
-  
+
   // Save your data in a corresponding text file in the `Data` directory.
   var data: String
 
@@ -50,7 +50,7 @@ struct Day01: AdventDay {
     let list1 = input.0
     let list2 = input.1
 
-    let dic = list2.reduce([Int:Int]()) { partialResult, value in
+    let dic = list2.reduce([Int: Int]()) { partialResult, value in
       partialResult.merging([value: 1]) { (current, _) in current + 1 }
     }
 

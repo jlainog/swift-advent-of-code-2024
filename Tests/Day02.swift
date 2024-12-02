@@ -1,5 +1,6 @@
-@testable import AdventOfCode
 import Testing
+
+@testable import AdventOfCode
 
 struct Day02Tests {
   // Smoke test data provided in the challenge question
