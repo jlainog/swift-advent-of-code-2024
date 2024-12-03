@@ -3,23 +3,28 @@ import Parsing
 
 struct Day03: AdventDay {
 
+  struct MulParser: Parser {
+    var body: some Parser<Substring, Int> {
+      Parse {
+        "mul("
+        Int.parser()
+        ","
+        Int.parser()
+        ")"
+      }.map { $0.0 * $0.1 }
+    }
+  }
+
   // Save your data in a corresponding text file in the `Data` directory.
   var data: String
 
-  func parseInput() throws -> [Int] {
-    let mulParser = Parse {
-      "mul("
-      Int.parser()
-      ","
-      Int.parser()
-      ")"
-    }.map { $0.0 * $0.1 }
+  func part1() async throws -> Int {
     let mulOptionsParser = OneOf {
       Parse {
         Skip {
           PrefixUpTo("mul(")
         }
-        mulParser
+        MulParser()
       }
 
       Parse {
@@ -65,11 +70,7 @@ struct Day03: AdventDay {
       Rest()
     }
 
-    return try parser.parse(data)
-  }
-
-  func part1() async throws -> Int {
-    let input = try parseInput()
+    let input = try parser.parse(data)
     return input.reduce(0, +)
   }
 
@@ -81,21 +82,15 @@ struct Day03: AdventDay {
       case noop
     }
 
-    let mulParser = Parse {
-      "mul("
-      Int.parser()
-      ","
-      Int.parser()
-      ")"
-    }.map { $0.0 * $0.1 }
     let parser = Many {
       OneOf {
         "do()".map { Operation.do }
         "don't()".map { Operation.dont }
-        mulParser.map { Operation.mul($0) }
+        MulParser().map { Operation.mul($0) }
         Skip { First() }.map { Operation.noop }
       }
     }
+
     let input = try parser.parse(data)
     var doOp = true
     return input.reduce(0) {

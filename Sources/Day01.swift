@@ -5,38 +5,30 @@ struct Day01: AdventDay {
 
   typealias LocationId = Int
 
+  struct LocationIdParser: Parser {
+    var body: some Parser<Substring, ([LocationId], [LocationId])> {
+      Many {
+        Int.parser()
+        "   "
+        Int.parser()
+      } separator: {
+        "\n"
+      } terminator: {
+        Whitespace()
+      }.map { rows in
+        rows.reduce(into: ([LocationId](), [LocationId]())) { result, row in
+          result.0.append(row.0)
+          result.1.append(row.1)
+        }
+      }
+    }
+  }
+
   // Save your data in a corresponding text file in the `Data` directory.
   var data: String
 
-  func parseInput() throws -> ([LocationId], [LocationId]) {
-    let row = Parse(input: Substring.self) {
-      Int.parser()
-      "   "
-      Int.parser()
-    }
-    let rows = Many {
-      row
-    } separator: {
-      "\n"
-    } terminator: {
-      Whitespace()
-    }.map { rows in
-      var list1 = [LocationId]()
-      var list2 = [LocationId]()
-
-      for row in rows {
-        list1.append(row.0)
-        list2.append(row.1)
-      }
-
-      return (list1, list2)
-    }
-
-    return try rows.parse(data)
-  }
-
   func part1() async throws -> Int {
-    let input = try parseInput()
+    let input = try LocationIdParser().parse(data)
     let list1 = input.0.sorted()
     let list2 = input.1.sorted()
     return zip(list1, list2).reduce(0) { result, pair in
@@ -45,10 +37,10 @@ struct Day01: AdventDay {
   }
 
   func part2() async throws -> Int {
-    var similarityScore = 0
-    let input = try parseInput()
+    let input = try LocationIdParser().parse(data)
     let list1 = input.0
     let list2 = input.1
+    var similarityScore = 0
 
     let dic = list2.reduce([Int: Int]()) { partialResult, value in
       partialResult.merging([value: 1]) { (current, _) in current + 1 }
