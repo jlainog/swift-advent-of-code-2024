@@ -88,6 +88,39 @@ struct Day04: AdventDay {
   }
 
   func part2() async throws -> Int {
-    throw PartUnimplemented(day: day, part: 2)
+    let input = data.split(separator: "\n").reduce(into: [[Character]]()) { result, line in
+      result.append(
+        line.reduce(into: [Character]()) { result, char in
+          result.append(char)
+        }
+      )
+    }
+    let lines = input.count
+    let columns = input[0].count
+    var count = 0
+
+    for i in 0..<lines {
+      for j in 0..<columns {
+        if input[i][j] == "M", j < columns - 2, i < lines - 2 {
+          if input[i + 1][j + 1] == "A" && input[i + 2][j + 2] == "S" {
+            if (input[i + 2][j] == "M" && input[i][j + 2] == "S")
+                || (input[i + 2][j] == "S" && input[i][j + 2] == "M") {
+              count += 1
+            }
+          }
+        }
+
+        if input[i][j] == "S", j < columns - 2, i < lines - 2 {
+          if input[i + 1][j + 1] == "A" && input[i + 2][j + 2] == "M" {
+            if (input[i + 2][j] == "M" && input[i][j + 2] == "S")
+                || (input[i + 2][j] == "S" && input[i][j + 2] == "M") {
+              count += 1
+            }
+          }
+        }
+      }
+    }
+
+    return count
   }
 }
